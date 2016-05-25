@@ -16,14 +16,28 @@ public class wPrzod {
     static TreeMap<String, Map<String, Character>> regulyMap = new TreeMap<>();
     //Array of values 'T' and 'F' in each line
     static ArrayList<Character> newLineArray = new ArrayList<>();
+    static boolean fail = false;
+    static boolean win = false;
+    static int noOr = 0;
+    static int noAnd = 0;
 
     static public void find() {
         try {
             File regulyFile = new File("data/" + MainWindow.PodajRegulyTextField.getText());
             FileInputStream regulyStream = new FileInputStream(regulyFile);
             char current;
+            int noLine = 0;
+            MainWindow.ResultsOutputArea.setText("");
 
-            while (regulyStream.available() > 0) {
+            while (regulyStream.available() > 0 && !fail && !win) {
+                if (newLineArray.isEmpty()) {
+                    noLine++;
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(noLine);
+                    String noLineStr = sb.toString();
+                    //MainWindow.ResultsOutputArea.setFont(new Font("Serif", Font.ITALIC, 15));
+                    MainWindow.ResultsOutputArea.append("> " + noLineStr + " linia \n");
+                }
                 current = (char) regulyStream.read();
                 //System.out.print(current);
 
@@ -40,34 +54,35 @@ public class wPrzod {
                 }
 
                 if (current == '=' && (current = (char) regulyStream.read()) == '>') {
-                    String string = "";
-                    current = (char) regulyStream.read();
-                    while (current != ';') {
-                        current = (char) regulyStream.read();
-                        System.out.println(string);
-                        string += current;
+                    if (newLineArray.size() - 1 == noOr) {
+                        if (newLineArray.contains('T'))
+                            newLineArray.add('T');
+                        else
+                            newLineArray.add('F');
                     }
-                    Pattern p = Pattern.compile("([a-zA-Z]+)\\(([a-zA-Z]+)\\)");
-                    Matcher m = p.matcher(string);
-                    while (m.find()) {
-                        String newString = m.group(1) + '(' + m.group(2) + ')';
-                        if (newString.equals(MainWindow.SzukaneTextField.getText())) {
-                            //System.out.println("Znaczenie szukanego " + newString + ": " + newLineArray.get(newLineArray.size() - 1));
-                            MainWindow.ResultsOutputArea.setText("Znaczenie szukanego " + newString + ": " + newLineArray.get(newLineArray.size() - 1));
 
-//HERE STOP THE PROGRAM BUT DISPLAY RESULTS
-
-                        } else {
-                            regulyParametry.put(m.group(2), newLineArray.get(newLineArray.size() - 1));
-                            regulyMap.put(m.group(1), regulyParametry);
-                        }
+                    if (newLineArray.size() - 1 == noAnd) {
+                        if (newLineArray.contains('F'))
+                            newLineArray.add('F');
+                        else
+                            newLineArray.add('T');
                     }
+                    System.out.println(newLineArray);
+                    if (ifSzukane(current, regulyStream, newLineArray))
+                        win = true;
                 }
+
+                if (current == '|' && (current = (char) regulyStream.read()) == '|')
+                    noOr++;
+
+                if (current == '&' && (current = (char) regulyStream.read()) == '&')
+                    noAnd++;
 
                 if (current == '\n')
                     newLineArray.clear();
-
             }
+            if (!MainWindow.ResultsOutputArea.getText().contains("Znaczenie szukanego"))
+                MainWindow.ResultsOutputArea.append("\nZnaczenia szukanego nie znaleziono");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,16 +103,19 @@ public class wPrzod {
             while (m.find()) {
                 //System.out.println("group:" + m.group(1) + " " + m.group(2));
                 if (getDane.daneMap.containsKey(m.group(1)) && (getDane.daneMap.get(m.group(1)).get(m.group(2)) != null)) {
-                    //System.out.println(m.group(1) + " " + m.group(2)  + " " + getDane.daneMap.get(m.group(1)).get(m.group(2)));
+                    System.out.println(m.group(1) + " " + m.group(2)  + " " + getDane.daneMap.get(m.group(1)).get(m.group(2)));
                     regulyParametry.put(m.group(2), getDane.daneMap.get(m.group(1)).get(m.group(2)));
                     regulyMap.put(m.group(1), regulyParametry);
                     newLineArray.add(getDane.daneMap.get(m.group(1)).get(m.group(2)));
+                    MainWindow.ResultsOutputArea.append("Znaleziono znaczenie dla " + m.group(1) + '(' + m.group(2) + "): " + getDane.daneMap.get(m.group(1)).get(m.group(2)) + '\n');
                 } else {
-                    System.out.println("Nie ma danej: " + m.group(1));
-                    //System.exit(1);
+                    //System.out.println("Nie ma danej: " + m.group(1));
+                    MainWindow.ResultsOutputArea.append("\nNie ma znaczenia dla danej: " + m.group(1) + '(' + m.group(2) + ')');
+                    fail = true;
                 }
             }
         } catch (IOException ex) {
+            ex.getMessage();
         }
     }
 
@@ -106,17 +124,22 @@ public class wPrzod {
             current = (char) regulyStream.read();
             if (Character.isLetter(current)) {
                 ifLetter(current, regulyStream, newLineArray);
-                //Map.Entry<String, Map<String, Character>> lastEntry = regulyMap.lastEntry();
-                //Map<String, Character> lastParametry = lastEntry.getValue();
-                //if ( lastParametry.values().contains('T') )
-                if (newLineArray.get(newLineArray.size() - 1) == 'T') {
-                    newLineArray.set(newLineArray.size() - 1, 'F');
-                } else {
-                    newLineArray.set(newLineArray.size() - 1, 'T');
-                }
-                //System.out.println(newLineArray);
-            }
+                if (!fail) {
+                    Map.Entry<String, Map<String, Character>> lastEntry = regulyMap.lastEntry();
+                    Map<String, Character> lastParametry = lastEntry.getValue();
+                    if (lastParametry.values().contains('T'))
+                        MainWindow.ResultsOutputArea.append("... i zostało ono zmienione na F \n");
+                    else
+                        MainWindow.ResultsOutputArea.append("... i zostało ono zmienione na T \n");
+                    if (newLineArray.get(newLineArray.size() - 1) == 'T') {
+                        newLineArray.set(newLineArray.size() - 1, 'F');
+                    } else {
+                        newLineArray.set(newLineArray.size() - 1, 'T');
+                    }
 
+                    //System.out.println(newLineArray);
+                }
+            }
             if (current == '(') {
                 ifBraces(current, regulyStream, newLineArray);
                 if (newLineArray.get(newLineArray.size() - 1) == 'T') {
@@ -126,6 +149,7 @@ public class wPrzod {
                 }
             }
         } catch (IOException ex) {
+            ex.getMessage();
         }
     }
 
@@ -136,22 +160,28 @@ public class wPrzod {
             int noAnd = 0;
 
             while ((current = (char) regulyStream.read()) != ')') {
-                if (Character.isLetter(current)) {
-                    ifLetter(current, regulyStream, newLineArray);
-                    newBraceArray.add(newLineArray.get(newLineArray.size() - 1));
-                    newLineArray.remove(newLineArray.size() - 1);
-                    System.out.println(newBraceArray);
-                    System.out.println(newLineArray);
-                } else if (current == '!') {
-                    ifExclam(current, regulyStream, newLineArray);
-                    newBraceArray.add(newLineArray.get(newLineArray.size() - 1));
-                    newLineArray.remove(newLineArray.size() - 1);
-                    System.out.println(newBraceArray);
-                    System.out.println(newLineArray);
-                } else if (current == '|' && (char) regulyStream.read() == '|')
-                    noOr++;
-                else if (current == '&' && (char) regulyStream.read() == '&')
-                    noAnd++;
+                if (!fail) {
+                    if (Character.isLetter(current)) {
+                        ifLetter(current, regulyStream, newLineArray);
+                        if (!fail) {
+                            newBraceArray.add(newLineArray.get(newLineArray.size() - 1));
+                            newLineArray.remove(newLineArray.size() - 1);
+                            System.out.println(newBraceArray);
+                            System.out.println(newLineArray);
+                        }
+                    } else if (current == '!') {
+                        ifExclam(current, regulyStream, newLineArray);
+                        if (!fail) {
+                            newBraceArray.add(newLineArray.get(newLineArray.size() - 1));
+                            newLineArray.remove(newLineArray.size() - 1);
+                            System.out.println(newBraceArray);
+                            System.out.println(newLineArray);
+                        }
+                    } else if (current == '|' && (char) regulyStream.read() == '|')
+                        noOr++;
+                    else if (current == '&' && (char) regulyStream.read() == '&')
+                        noAnd++;
+                }
             }
 
             if (newBraceArray.size() - 1 == noOr) {
@@ -170,12 +200,34 @@ public class wPrzod {
             System.out.println(newBraceArray);
             System.out.println(newLineArray);
         } catch (IOException ex) {
+            ex.getMessage();
         }
     }
 
-    static private void ifEqual(char current, FileInputStream regulyStream) {
-
+    static private boolean ifSzukane (char current, FileInputStream regulyStream, ArrayList<Character> newLineArray) {
+        try {
+            String string = "";
+            current = (char) regulyStream.read();
+            while (current != ';') {
+                current = (char) regulyStream.read();
+                System.out.println(string);
+                string += current;
+            }
+            Pattern p = Pattern.compile("([a-zA-Z]+)\\(([a-zA-Z]+)\\)");
+            Matcher m = p.matcher(string);
+            while (m.find()) {
+                String newString = m.group(1) + '(' + m.group(2) + ')';
+                if (newString.equals(MainWindow.SzukaneTextField.getText())) {
+                    MainWindow.ResultsOutputArea.append("\nZnaczenie szukanego " + newString + ": " + newLineArray.get(newLineArray.size() - 1));
+                    return true;
+                } else {
+                    regulyParametry.put(m.group(2), newLineArray.get(newLineArray.size() - 1));
+                    regulyMap.put(m.group(1), regulyParametry);
+                }
+            }
+        } catch (IOException ex) {
+            ex.getMessage();
+        }
+        return false;
     }
-
 }
-

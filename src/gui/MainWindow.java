@@ -138,6 +138,7 @@ public class MainWindow extends JFrame {
                     while((line = bufferedReader.readLine()) != null) {
                         EdycjaRegulyTextArea.append(line + "\n");
                     }
+                    EdycjaRegulyTextArea.setText(EdycjaRegulyTextArea.getText().substring(0, EdycjaRegulyTextArea.getText().length()-1));
 
                     bufferedReader.close();
                 }
@@ -228,8 +229,6 @@ public class MainWindow extends JFrame {
         editMenu.add(clearResultsAction);
         helpMenu.add(aboutAction);
 
-
-
         //REZULTATY//
         WPrzodButton.addActionListener(new ActionListener() {
             @Override
@@ -237,6 +236,7 @@ public class MainWindow extends JFrame {
                 getDane.putSzukane();
                 getDane.putDane();
                 wPrzod.find();
+
             }
         });
     }
