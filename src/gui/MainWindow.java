@@ -16,6 +16,7 @@ public class MainWindow extends JFrame {
     static public JTextArea EdycjaDaneTextArea;
     static public JTextArea EdycjaRegulyTextArea;
     static public JTextField SzukaneTextField;
+    static public JTextArea ResultsOutputArea;
 
     static public String getDaneArea () {return EdycjaDaneTextArea.getText();}
     static public String getRegulyArea() { return EdycjaDaneTextArea.getText(); }
@@ -67,7 +68,7 @@ public class MainWindow extends JFrame {
         upGridLayout.add(new JScrollPane(EdycjaRegulyTextArea));
 
         SzukaneTextField = new JTextField("D(d)");
-        JTextArea ResultsOutputArea = new JTextArea();
+        ResultsOutputArea = new JTextArea();
 
         JPanel WTrzodTylPanel = new JPanel();
         JButton WPrzodButton = new JButton ("W przód");
@@ -129,7 +130,7 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String fileName = PodajRegulyTextField.getText();
-                String line = null;
+                String line;
                 try {
                     FileReader fileReader = new FileReader("data/" + fileName);
                     BufferedReader bufferedReader = new BufferedReader(fileReader);
