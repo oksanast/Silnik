@@ -103,11 +103,14 @@ public class wPrzod {
             while (m.find()) {
                 //System.out.println("group:" + m.group(1) + " " + m.group(2));
                 if (getDane.daneMap.containsKey(m.group(1)) && (getDane.daneMap.get(m.group(1)).get(m.group(2)) != null)) {
-                    System.out.println(m.group(1) + " " + m.group(2)  + " " + getDane.daneMap.get(m.group(1)).get(m.group(2)));
+                    System.out.println(m.group(1) + " " + m.group(2) + " " + getDane.daneMap.get(m.group(1)).get(m.group(2)));
                     regulyParametry.put(m.group(2), getDane.daneMap.get(m.group(1)).get(m.group(2)));
                     regulyMap.put(m.group(1), regulyParametry);
                     newLineArray.add(getDane.daneMap.get(m.group(1)).get(m.group(2)));
                     MainWindow.ResultsOutputArea.append("Znaleziono znaczenie dla " + m.group(1) + '(' + m.group(2) + "): " + getDane.daneMap.get(m.group(1)).get(m.group(2)) + '\n');
+                } else if (regulyMap.containsKey(m.group(1)) && (regulyMap.get(m.group(1)).get(m.group(2)) != null)) {
+                    newLineArray.add(regulyMap.get(m.group(1)).get(m.group(2)));
+                    MainWindow.ResultsOutputArea.append("Znaleziono znaczenie dla " + m.group(1) + '(' + m.group(2) + "): " + regulyMap.get(m.group(1)).get(m.group(2)) + '\n');
                 } else {
                     //System.out.println("Nie ma danej: " + m.group(1));
                     MainWindow.ResultsOutputArea.append("\nNie ma znaczenia dla danej: " + m.group(1) + '(' + m.group(2) + ')');
@@ -147,6 +150,7 @@ public class wPrzod {
                 } else {
                     newLineArray.set(newLineArray.size() - 1, 'T');
                 }
+                MainWindow.ResultsOutputArea.append("... i zostało ono zmienione na " + newLineArray.get(newLineArray.size()-1) + '\n');
             }
         } catch (IOException ex) {
             ex.getMessage();
@@ -197,6 +201,7 @@ public class wPrzod {
                 else
                     newLineArray.add('T');
             }
+            MainWindow.ResultsOutputArea.append("Znaczenie w nawiasach: "+newLineArray.get(newLineArray.size()-1)+'\n');
             System.out.println(newBraceArray);
             System.out.println(newLineArray);
         } catch (IOException ex) {
@@ -221,6 +226,7 @@ public class wPrzod {
                     MainWindow.ResultsOutputArea.append("\nZnaczenie szukanego " + newString + ": " + newLineArray.get(newLineArray.size() - 1));
                     return true;
                 } else {
+                    MainWindow.ResultsOutputArea.append("Znaleziono znaczenie dla " + m.group(1) + '(' + m.group(2) + "): " + newLineArray.get(newLineArray.size() - 1) + '\n');
                     regulyParametry.put(m.group(2), newLineArray.get(newLineArray.size() - 1));
                     regulyMap.put(m.group(1), regulyParametry);
                 }
