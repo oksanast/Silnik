@@ -2,6 +2,7 @@ package gui;
 
 import core.getDane;
 import core.wPrzod;
+import core.wTyl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +25,7 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         setSize(500, 700);
         setResizable(true);
+        setLocationRelativeTo(null);
         setTitle("Silnik wnioskujący");
         setMinimumSize(new Dimension(250, 300));
 
@@ -115,7 +117,10 @@ public class MainWindow extends JFrame {
                     while((line = bufferedReader.readLine()) != null) {
                         EdycjaDaneTextArea.append(line + "\n");
                     }
-
+                    if (EdycjaDaneTextArea.getText().equals(""))
+                        EdycjaDaneTextArea.setText("Plik z danymi jest pusty");
+                    else
+                        EdycjaDaneTextArea.setText(EdycjaDaneTextArea.getText().substring(0, EdycjaDaneTextArea.getText().length()-1));
                     bufferedReader.close();
                 }
                 catch(FileNotFoundException ex) {
@@ -138,7 +143,12 @@ public class MainWindow extends JFrame {
                     while((line = bufferedReader.readLine()) != null) {
                         EdycjaRegulyTextArea.append(line + "\n");
                     }
-                    EdycjaRegulyTextArea.setText(EdycjaRegulyTextArea.getText().substring(0, EdycjaRegulyTextArea.getText().length()-1));
+                    if (EdycjaRegulyTextArea.getText().equals("")) {
+                        EdycjaRegulyTextArea.setForeground(Color.red);
+                        EdycjaRegulyTextArea.setText("Plik z regulami jest pusty");
+                    }
+                    else
+                        EdycjaRegulyTextArea.setText(EdycjaRegulyTextArea.getText().substring(0, EdycjaRegulyTextArea.getText().length()-1));
 
                     bufferedReader.close();
                 }
@@ -159,7 +169,8 @@ public class MainWindow extends JFrame {
                 try
                 {
                     writer = new PrintWriter(fileName);
-                    writer.write(EdycjaDaneTextArea.getText());
+                    if (!EdycjaDaneTextArea.getText().equals(""))
+                        writer.write(EdycjaDaneTextArea.getText());
                     writer.close();
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
@@ -174,14 +185,14 @@ public class MainWindow extends JFrame {
                 try
                 {
                     writer = new PrintWriter(fileName);
-                    writer.write(EdycjaRegulyTextArea.getText());
+                    if(!EdycjaRegulyTextArea.getText().equals(""))
+                        writer.write(EdycjaRegulyTextArea.getText());
                     writer.close();
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 }
             }
         });
-
 
 
         //JMENUBAR//
@@ -237,6 +248,15 @@ public class MainWindow extends JFrame {
                 getDane.putDane();
                 wPrzod.find();
 
+            }
+        });
+
+        WTylButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getDane.putSzukane();
+                getDane.putDane();
+                wTyl.find();
             }
         });
     }

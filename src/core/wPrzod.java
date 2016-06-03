@@ -18,8 +18,6 @@ public class wPrzod {
     static ArrayList<Character> newLineArray = new ArrayList<>();
     static boolean fail = false;
     static boolean win = false;
-    static int noOr = 0;
-    static int noAnd = 0;
 
     static public void find() {
         try {
@@ -27,6 +25,8 @@ public class wPrzod {
             FileInputStream regulyStream = new FileInputStream(regulyFile);
             char current;
             int noLine = 0;
+            int noOr = 0;
+            int noAnd = 0;
             MainWindow.ResultsOutputArea.setText("");
 
             while (regulyStream.available() > 0 && !fail && !win) {
@@ -54,6 +54,7 @@ public class wPrzod {
                 }
 
                 if (current == '=' && (current = (char) regulyStream.read()) == '>') {
+                    System.out.println("noOr:"+noOr+",noAnd:"+noAnd+", newLine:"+newLineArray.size());
                     if (newLineArray.size() - 1 == noOr) {
                         if (newLineArray.contains('T'))
                             newLineArray.add('T');
@@ -78,11 +79,18 @@ public class wPrzod {
                 if (current == '&' && (current = (char) regulyStream.read()) == '&')
                     noAnd++;
 
-                if (current == '\n')
+                if (current == '\n') {
                     newLineArray.clear();
+                    noOr = 0;
+                    noAnd = 0;
+                }
             }
             if (!MainWindow.ResultsOutputArea.getText().contains("Znaczenie szukanego"))
                 MainWindow.ResultsOutputArea.append("\nZnaczenia szukanego nie znaleziono");
+            fail = false;
+            win = false;
+            newLineArray.clear();
+            regulyStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,7 +111,7 @@ public class wPrzod {
             while (m.find()) {
                 //System.out.println("group:" + m.group(1) + " " + m.group(2));
                 if (getDane.daneMap.containsKey(m.group(1)) && (getDane.daneMap.get(m.group(1)).get(m.group(2)) != null)) {
-                    System.out.println(m.group(1) + " " + m.group(2) + " " + getDane.daneMap.get(m.group(1)).get(m.group(2)));
+                    //System.out.println(m.group(1) + " " + m.group(2) + " " + getDane.daneMap.get(m.group(1)).get(m.group(2)));
                     regulyParametry.put(m.group(2), getDane.daneMap.get(m.group(1)).get(m.group(2)));
                     regulyMap.put(m.group(1), regulyParametry);
                     newLineArray.add(getDane.daneMap.get(m.group(1)).get(m.group(2)));
@@ -170,16 +178,16 @@ public class wPrzod {
                         if (!fail) {
                             newBraceArray.add(newLineArray.get(newLineArray.size() - 1));
                             newLineArray.remove(newLineArray.size() - 1);
-                            System.out.println(newBraceArray);
-                            System.out.println(newLineArray);
+                            //System.out.println(newBraceArray);
+                            //System.out.println(newLineArray);
                         }
                     } else if (current == '!') {
                         ifExclam(current, regulyStream, newLineArray);
                         if (!fail) {
                             newBraceArray.add(newLineArray.get(newLineArray.size() - 1));
                             newLineArray.remove(newLineArray.size() - 1);
-                            System.out.println(newBraceArray);
-                            System.out.println(newLineArray);
+                            //System.out.println(newBraceArray);
+                            //System.out.println(newLineArray);
                         }
                     } else if (current == '|' && (char) regulyStream.read() == '|')
                         noOr++;
@@ -202,8 +210,8 @@ public class wPrzod {
                     newLineArray.add('T');
             }
             MainWindow.ResultsOutputArea.append("Znaczenie w nawiasach: "+newLineArray.get(newLineArray.size()-1)+'\n');
-            System.out.println(newBraceArray);
-            System.out.println(newLineArray);
+            //System.out.println(newBraceArray);
+            //System.out.println(newLineArray);
         } catch (IOException ex) {
             ex.getMessage();
         }
@@ -215,7 +223,7 @@ public class wPrzod {
             current = (char) regulyStream.read();
             while (current != ';') {
                 current = (char) regulyStream.read();
-                System.out.println(string);
+                //System.out.println(string);
                 string += current;
             }
             Pattern p = Pattern.compile("([a-zA-Z]+)\\(([a-zA-Z]+)\\)");
