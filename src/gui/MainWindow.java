@@ -19,9 +19,6 @@ public class MainWindow extends JFrame {
     static public JTextField SzukaneTextField;
     static public JTextArea ResultsOutputArea;
 
-    static public String getDaneArea () {return EdycjaDaneTextArea.getText();}
-    static public String getRegulyArea() { return EdycjaDaneTextArea.getText(); }
-
     public MainWindow() {
         setSize(500, 700);
         setResizable(true);
