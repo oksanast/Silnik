@@ -1,1 +1,2 @@
-A(a) = T; B(b) = T; C(c) = F; B(s) = T
+A(a) = T; B(s) = T; C(c) = F;
+B(c) = F; C(a) = T;

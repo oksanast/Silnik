@@ -6,8 +6,7 @@ import core.wTyl;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
 import java.lang.*;
 
@@ -29,10 +28,10 @@ public class MainWindow extends JFrame {
         JTabbedPane mainTable = new JTabbedPane();
         JPanel mainBorderLayout = new JPanel(new BorderLayout());
         JPanel upBorderLayout = new JPanel(new BorderLayout());
-        JPanel downGridLayout = new JPanel(new GridLayout(4,1));
+        JPanel downGridLayout = new JPanel(new GridLayout(4, 1));
         JPanel mainGridLayout = new JPanel(new GridLayout(3, 1));
         JPanel upGridLayout = new JPanel(new GridLayout(4, 2));
-        JPanel resultsGridLayout = new JPanel(new GridLayout(0,1));
+        JPanel resultsGridLayout = new JPanel(new GridLayout(0, 1));
 
         JLabel PodajDaneLabel = new JLabel("Podaj dane:");
         PodajDaneTextField = new JTextField("dane.txt");
@@ -43,7 +42,7 @@ public class MainWindow extends JFrame {
         JLabel PodajRegulyLabel = new JLabel("Podaj reguły:");
         PodajRegulyTextField = new JTextField("reguly.txt");
         EdycjaRegulyTextArea = new JTextArea();
-        EdycjaRegulyTextArea.setMinimumSize(new Dimension(100,70));
+        EdycjaRegulyTextArea.setMinimumSize(new Dimension(100, 70));
         JButton OkRegulyButton = new JButton("Ok");
         JButton SaveEdycjaRegulyButton = new JButton("Edytuj i zapisz");
 
@@ -66,16 +65,16 @@ public class MainWindow extends JFrame {
         upGridLayout.add(EdycjaRegulyTextArea);
         upGridLayout.add(new JScrollPane(EdycjaRegulyTextArea));
 
-        SzukaneTextField = new JTextField("D(d)");
+        SzukaneTextField = new JTextField("");
         ResultsOutputArea = new JTextArea();
 
         JPanel WTrzodTylPanel = new JPanel();
-        JButton WPrzodButton = new JButton ("W przód");
-        WPrzodButton.setPreferredSize(new Dimension(220,40));
+        JButton WPrzodButton = new JButton("W przód");
+        WPrzodButton.setPreferredSize(new Dimension(220, 40));
         WPrzodButton.setBackground(Color.cyan);
-        JButton WTylButton = new JButton ("W tył");
-        WTylButton.setPreferredSize(new Dimension(220,40));
-        WTylButton.setBackground(Color.getHSBColor(100,100,200));
+        JButton WTylButton = new JButton("W tył");
+        WTylButton.setPreferredSize(new Dimension(220, 40));
+        WTylButton.setBackground(Color.getHSBColor(100, 100, 200));
         WTrzodTylPanel.add(WPrzodButton);
         WTrzodTylPanel.add(WTylButton);
 
@@ -85,7 +84,7 @@ public class MainWindow extends JFrame {
         downGridLayout.add(new JLabel("Rezultaty", SwingConstants.CENTER));
 
         JPanel resultsPanel = new JPanel();
-        resultsPanel.setLayout(new GridLayout(1,1));
+        resultsPanel.setLayout(new GridLayout(1, 1));
 
         resultsPanel.add(ResultsOutputArea);
         resultsPanel.add(new JScrollPane(ResultsOutputArea));
@@ -111,19 +110,17 @@ public class MainWindow extends JFrame {
                 try {
                     FileReader fileReader = new FileReader("data/" + fileName);
                     BufferedReader bufferedReader = new BufferedReader(fileReader);
-                    while((line = bufferedReader.readLine()) != null) {
+                    while ((line = bufferedReader.readLine()) != null) {
                         EdycjaDaneTextArea.append(line + "\n");
                     }
                     if (EdycjaDaneTextArea.getText().equals(""))
                         EdycjaDaneTextArea.setText("Plik z danymi jest pusty");
                     else
-                        EdycjaDaneTextArea.setText(EdycjaDaneTextArea.getText().substring(0, EdycjaDaneTextArea.getText().length()-1));
+                        EdycjaDaneTextArea.setText(EdycjaDaneTextArea.getText().substring(0, EdycjaDaneTextArea.getText().length() - 1));
                     bufferedReader.close();
-                }
-                catch(FileNotFoundException ex) {
+                } catch (FileNotFoundException ex) {
                     System.out.println("Unable to open file '" + fileName + "'");
-                }
-                catch(IOException ex) {
+                } catch (IOException ex) {
                     System.out.println("Error reading file '" + fileName + "'");
                 }
             }
@@ -137,22 +134,19 @@ public class MainWindow extends JFrame {
                     FileReader fileReader = new FileReader("data/" + fileName);
                     BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-                    while((line = bufferedReader.readLine()) != null) {
+                    while ((line = bufferedReader.readLine()) != null) {
                         EdycjaRegulyTextArea.append(line + "\n");
                     }
                     if (EdycjaRegulyTextArea.getText().equals("")) {
                         EdycjaRegulyTextArea.setForeground(Color.red);
                         EdycjaRegulyTextArea.setText("Plik z regulami jest pusty");
-                    }
-                    else
-                        EdycjaRegulyTextArea.setText(EdycjaRegulyTextArea.getText().substring(0, EdycjaRegulyTextArea.getText().length()-1));
+                    } else
+                        EdycjaRegulyTextArea.setText(EdycjaRegulyTextArea.getText().substring(0, EdycjaRegulyTextArea.getText().length() - 1));
 
                     bufferedReader.close();
-                }
-                catch(FileNotFoundException ex) {
+                } catch (FileNotFoundException ex) {
                     System.out.println("Unable to open file '" + fileName + "'");
-                }
-                catch(IOException ex) {
+                } catch (IOException ex) {
                     System.out.println("Error reading file '" + fileName + "'");
                 }
             }
@@ -163,8 +157,7 @@ public class MainWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 PrintWriter writer;
                 String fileName = "data/" + PodajDaneTextField.getText();
-                try
-                {
+                try {
                     writer = new PrintWriter(fileName);
                     if (!EdycjaDaneTextArea.getText().equals(""))
                         writer.write(EdycjaDaneTextArea.getText());
@@ -179,10 +172,9 @@ public class MainWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 PrintWriter writer;
                 String fileName = "data/" + PodajRegulyTextField.getText();
-                try
-                {
+                try {
                     writer = new PrintWriter(fileName);
-                    if(!EdycjaRegulyTextArea.getText().equals(""))
+                    if (!EdycjaRegulyTextArea.getText().equals(""))
                         writer.write(EdycjaRegulyTextArea.getText());
                     writer.close();
                 } catch (FileNotFoundException ex) {
@@ -241,19 +233,28 @@ public class MainWindow extends JFrame {
         WPrzodButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getDane.putSzukane();
-                getDane.putDane();
-                wPrzod.find();
-
+                if (!SzukaneTextField.getText().equals("")
+                        && !PodajDaneTextField.getText().equals("")
+                        && !PodajRegulyTextField.getText().equals("")) {
+                    getDane.putSzukane();
+                    getDane.putDane();
+                    wPrzod.find();
+                } else
+                    ResultsOutputArea.setText("Pole nie może być puste!");
             }
         });
 
         WTylButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getDane.putSzukane();
-                getDane.putDane();
-                wTyl.find();
+                if (!SzukaneTextField.getText().equals("")
+                        && !PodajDaneTextField.getText().equals("")
+                        && !PodajRegulyTextField.getText().equals("")) {
+                    getDane.putSzukane();
+                    getDane.putDane();
+                    wTyl.find();
+                } else
+                    ResultsOutputArea.setText("Pole nie może być puste!");
             }
         });
     }

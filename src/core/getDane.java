@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class getDane extends MainWindow {
     static HashMap<String, Character> szukaneParametry = new HashMap<>();
     static HashMap<String, Map<String, Character>> szukaneMap = new HashMap<>();
+
     static public void putSzukane() {
         Pattern p = Pattern.compile("([a-zA-Z]+)\\(([a-zA-Z]+)\\)");
         Matcher m = p.matcher(SzukaneTextField.getText());
@@ -20,10 +21,11 @@ public class getDane extends MainWindow {
 
     static HashMap<String, Character> daneParametry = new HashMap<>();
     static HashMap<String, Map<String, Character>> daneMap = new HashMap<>();
+
     static public void putDane() {
         String daneText = EdycjaDaneTextArea.getText();
         String[] splits = daneText.split("; ");
-        for (String split: splits) {
+        for (String split : splits) {
             Pattern p = Pattern.compile("([a-zA-Z]+)\\(([a-zA-Z]+)\\) = ([a-zA-Z])");
             Matcher m = p.matcher(split);
             while (m.find()) {
