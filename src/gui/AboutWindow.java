@@ -19,8 +19,8 @@ public class AboutWindow extends JDialog{
         setTitle("O programie");
         JButton exit = new JButton("Zamknij");
         exit.addActionListener(e -> setVisible(false));
-        JLabel name = new JLabel("<html><h1><center>WhatToCook 2016<center></h1></html>");
-        JLabel description = new JLabel("<html>" + "Silnik wnioskujący" +":<br>Oksana Stechkevych<br><br>"+"</html>");
+        JLabel name = new JLabel("<html><h1><center>Silnik wnioskujący<center></h1></html>");
+        JLabel description = new JLabel("<html><br>Oksana Stechkevych<br><br>"+"</html>");
         JPanel mainBorderLayout = new JPanel(new BorderLayout());
         mainBorderLayout.add(exit,BorderLayout.SOUTH);
         mainBorderLayout.add(description,BorderLayout.CENTER);
